@@ -1,4 +1,5 @@
 import 'package:expense_tracker/models/expense.dart';
+import 'package:expense_tracker/widgets/expenses_list/expense_item.dart';
 import 'package:flutter/material.dart';
 
 class ExpensesList extends StatelessWidget {
@@ -15,7 +16,9 @@ class ExpensesList extends StatelessWidget {
     // of performance and visability. ListView creates scrolable list.
     return ListView.builder(
       itemCount: expenses.length,
-      itemBuilder: (context, index) => Text(expenses[index].title),
+      itemBuilder: (context, index) => ExpenseItem(
+        expenses[index],
+      ),
     );
   }
 }
