@@ -1,10 +1,11 @@
-import 'package:expense_tracker/models/expense.dart';
 import 'package:flutter/material.dart';
 
-class NewExpense extends StatefulWidget {
-  final Function(Expense expense) onAddExpense;
+import 'package:expense_tracker/models/expense.dart';
 
+class NewExpense extends StatefulWidget {
   const NewExpense({super.key, required this.onAddExpense});
+
+  final void Function(Expense expense) onAddExpense;
 
   @override
   State<NewExpense> createState() {
@@ -13,16 +14,15 @@ class NewExpense extends StatefulWidget {
 }
 
 class _NewExpenseState extends State<NewExpense> {
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _amountController = TextEditingController();
+  final _titleController = TextEditingController();
+  final _amountController = TextEditingController();
   DateTime? _selectedDate;
   Category _selectedCategory = Category.leisure;
 
   void _presentDatePicker() async {
-    final DateTime now = DateTime.now();
-    final DateTime firstDate = DateTime(now.year - 1, now.month, now.day);
-
-    final DateTime? pickedDate = await showDatePicker(
+    final now = DateTime.now();
+    final firstDate = DateTime(now.year - 1, now.month, now.day);
+    final pickedDate = await showDatePicker(
       context: context,
       initialDate: now,
       firstDate: firstDate,
@@ -34,15 +34,16 @@ class _NewExpenseState extends State<NewExpense> {
   }
 
   void _submitExpenseData() {
-    final double? enteredAmount = double.tryParse(_amountController.text);
-    final bool amountIsinvalid = enteredAmount == null || enteredAmount <= 0;
+    final enteredAmount = double.tryParse(_amountController
+        .text); // tryParse('Hello') => null, tryParse('1.12') => 1.12
+    final amountIsInvalid = enteredAmount == null || enteredAmount <= 0;
     if (_titleController.text.trim().isEmpty ||
-        amountIsinvalid ||
+        amountIsInvalid ||
         _selectedDate == null) {
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-          title: const Text('Invalid Input'),
+          title: const Text('Invalid input'),
           content: const Text(
               'Please make sure a valid title, amount, date and category was entered.'),
           actions: [
@@ -57,6 +58,7 @@ class _NewExpenseState extends State<NewExpense> {
       );
       return;
     }
+
     widget.onAddExpense(
       Expense(
         title: _titleController.text,
@@ -95,7 +97,7 @@ class _NewExpenseState extends State<NewExpense> {
                   controller: _amountController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
-                    prefixText: '\$',
+                    prefixText: '\$ ',
                     label: Text('Amount'),
                   ),
                 ),
@@ -116,37 +118,36 @@ class _NewExpenseState extends State<NewExpense> {
                       icon: const Icon(
                         Icons.calendar_month,
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(
-            height: 16,
-          ),
+          const SizedBox(height: 16),
           Row(
             children: [
               DropdownButton(
-                  value: _selectedCategory,
-                  items: Category.values
-                      .map(
-                        (category) => DropdownMenuItem(
-                          value: category,
-                          child: Text(
-                            category.name.toUpperCase(),
-                          ),
+                value: _selectedCategory,
+                items: Category.values
+                    .map(
+                      (category) => DropdownMenuItem(
+                        value: category,
+                        child: Text(
+                          category.name.toUpperCase(),
                         ),
-                      )
-                      .toList(),
-                  onChanged: (value) {
-                    if (value == null) {
-                      return;
-                    }
-                    setState(() {
-                      _selectedCategory = value;
-                    });
-                  }),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  if (value == null) {
+                    return;
+                  }
+                  setState(() {
+                    _selectedCategory = value;
+                  });
+                },
+              ),
               const Spacer(),
               TextButton(
                 onPressed: () {
@@ -159,7 +160,7 @@ class _NewExpenseState extends State<NewExpense> {
                 child: const Text('Save Expense'),
               ),
             ],
-          )
+          ),
         ],
       ),
     );
